@@ -47,12 +47,49 @@ export default function Tour() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-primary-800 to-primary-900 py-10">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <h1 className="text-3xl font-bold text-white">Tour Packages</h1>
-          <p className="mt-2 text-blue-200">Explore amazing day trips and excursions across Thailand</p>
+      <section className="relative overflow-hidden bg-primary-950">
+        {/* Layered gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_70%_30%,rgba(59,130,246,0.25),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_20%_70%,rgba(16,185,129,0.12),transparent)]" />
+
+        {/* Subtle decorative dots */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div className="absolute top-20 right-[12%] h-2 w-2 rounded-full bg-white" />
+          <div className="absolute top-28 right-[18%] h-1.5 w-1.5 rounded-full bg-white" />
+          <div className="absolute top-24 right-[10%] h-1 w-1 rounded-full bg-white" />
+          <div className="absolute bottom-28 left-[15%] h-2 w-2 rounded-full bg-white" />
+          <div className="absolute bottom-20 left-[20%] h-1.5 w-1.5 rounded-full bg-white" />
+          <div className="absolute top-16 left-[40%] h-1 w-1 rounded-full bg-white" />
         </div>
-      </div>
+
+        {/* Soft glow accents */}
+        <div className="absolute -top-24 left-1/4 h-56 w-56 rounded-full bg-emerald-400/10 blur-3xl" />
+        <div className="absolute -bottom-16 right-1/3 h-48 w-48 rounded-full bg-primary-400/10 blur-3xl" />
+
+        <div className="relative mx-auto max-w-7xl px-4 pt-24 pb-14 text-center lg:px-8 lg:pt-28 lg:pb-16">
+          <h1 className="mb-3 text-3xl font-bold text-white lg:text-4xl">
+            Discover <span className="bg-gradient-to-r from-primary-300 to-emerald-300 bg-clip-text text-transparent">Thailand</span>
+          </h1>
+          <p className="mx-auto mb-6 max-w-lg text-base font-light leading-relaxed text-blue-100/80">
+            Handpicked day trips and sightseeing tours — from island hopping to temple visits.
+          </p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {["Island Tours", "Temple Visits", "Adventure", "Cultural"].map((tag) => (
+              <span key={tag} className="rounded-full border border-white/10 bg-white/[0.07] px-3.5 py-1.5 text-sm font-medium text-white/90 backdrop-blur-sm transition hover:bg-white/[0.12]">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom curve */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 48" fill="none" className="w-full text-gray-50" preserveAspectRatio="none">
+            <path d="M0 48h1440V24C1200 0 960 40 720 40S240 0 0 24v24z" fill="currentColor" />
+          </svg>
+        </div>
+      </section>
 
       <div className="mx-auto max-w-7xl px-4 py-10 lg:px-8">
         {/* Filters */}

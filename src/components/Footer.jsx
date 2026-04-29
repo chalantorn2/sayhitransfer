@@ -67,31 +67,59 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
                 <Phone size={16} className="text-primary-400" />
-                <span>+66 76 123 456</span>
+                <a
+                  href="https://wa.me/66803895519"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition hover:text-white"
+                >
+                  +66 80 389 5519
+                </a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={16} className="text-primary-400" />
-                <span>info@sayhitransfer.com</span>
+                <a
+                  href="mailto:tptravelandtour@gmail.com"
+                  className="transition hover:text-white"
+                >
+                  tptravelandtour@gmail.com
+                </a>
               </li>
               <li className="flex items-start gap-2">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-primary-400" />
-                <span>Phuket, Thailand</span>
+                <MapPin
+                  size={16}
+                  className="mt-0.5 shrink-0 text-primary-400"
+                />
+                <span>Krabi, Thailand</span>
               </li>
               <li className="flex items-center gap-2">
                 <MessageCircle size={16} className="text-primary-400" />
-                <span>@sayhitransfer</span>
+                <a
+                  href="https://wa.me/66803895519"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition hover:text-white"
+                >
+                  WhatsApp
+                </a>
               </li>
               <li className="flex items-center gap-2">
                 <Globe size={16} className="text-primary-400" />
-                <span>SayHi Transfer</span>
+                <a
+                  href="https://www.facebook.com/share/1EVsQwfz9c/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition hover:text-white"
+                >
+                  SayHi Transfer
+                </a>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="mt-10 border-t border-primary-900 pt-6 text-center text-sm text-gray-500">
-          &copy; {new Date().getFullYear()} SayHi Transfer. All rights
-          reserved.
+          &copy; {new Date().getFullYear()} SayHi Transfer. All rights reserved.
         </div>
       </div>
     </footer>

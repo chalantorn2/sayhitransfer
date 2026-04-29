@@ -15,21 +15,31 @@ $dropoffId = isset($_GET['dropoff']) ? (int) $_GET['dropoff'] : 0;
 
 if ($pickupId > 0 && $dropoffId > 0) {
     // Return vehicles with route-specific price (fallback to base_price)
+    // Only return vehicles that have a real price for this route (either direction).
+    // If no row matches, the response is an empty array → frontend shows "route not served".
     $stmt = $db->prepare('
         SELECT
             v.id, v.name, v.description,
             v.max_passengers, v.max_luggage,
             v.image_url, v.sort_order,
-            COALESCE(rp.price, v.base_price) AS price
+            rp.price AS price
         FROM vehicles v
-        LEFT JOIN route_prices rp
+        INNER JOIN route_prices rp
             ON rp.vehicle_id = v.id
-            AND rp.pickup_location_id = :pickup
-            AND rp.dropoff_location_id = :dropoff
+            AND (
+                (rp.pickup_location_id = :pickup1 AND rp.dropoff_location_id = :dropoff1)
+                OR
+                (rp.pickup_location_id = :dropoff2 AND rp.dropoff_location_id = :pickup2)
+            )
         WHERE v.is_active = 1
-        ORDER BY v.sort_order, v.base_price
+        ORDER BY v.sort_order, rp.price
     ');
-    $stmt->execute(['pickup' => $pickupId, 'dropoff' => $dropoffId]);
+    $stmt->execute([
+        'pickup1'  => $pickupId,
+        'dropoff1' => $dropoffId,
+        'pickup2'  => $pickupId,
+        'dropoff2' => $dropoffId,
+    ]);
 } else {
     // Return all vehicles with base price
     $stmt = $db->query('

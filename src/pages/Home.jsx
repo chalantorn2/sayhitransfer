@@ -1,35 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
-  Shield,
-  Clock,
-  Headphones,
   Car,
   Plane,
   Map,
   Star,
   ArrowRight,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import TransferSearchForm from "../components/TransferSearchForm";
 import { fetchTours } from "../api";
-
-const features = [
-  {
-    icon: Shield,
-    title: "Safe & Reliable",
-    desc: "Professional drivers, well-maintained vehicles, and comprehensive insurance for your peace of mind.",
-  },
-  {
-    icon: Clock,
-    title: "24/7 Service",
-    desc: "We operate round the clock. Early morning flights or late-night arrivals — we've got you covered.",
-  },
-  {
-    icon: Headphones,
-    title: "Easy Booking",
-    desc: "Book online in minutes. Get instant confirmation and our team will reach out within 3 hours.",
-  },
-];
 
 const services = [
   {
@@ -49,12 +30,49 @@ const services = [
   },
 ];
 
+const transferGallery = Array.from({ length: 10 }, (_, i) => ({
+  src: `/customer/customer-${String(i + 1).padStart(2, "0")}.jpg`,
+  alt: `Happy traveler ${i + 1}`,
+}));
+
 export default function Home() {
   const [tours, setTours] = useState([]);
+  const sliderRef = useRef(null);
+  const [sliderIdx, setSliderIdx] = useState(0);
 
   useEffect(() => {
     fetchTours().then(setTours).catch(() => {});
   }, []);
+
+  /* Auto-play slider */
+  const scrollTo = useCallback((idx) => {
+    if (!sliderRef.current) return;
+    const card = sliderRef.current.children[idx];
+    if (card) {
+      sliderRef.current.scrollTo({ left: card.offsetLeft - 16, behavior: "smooth" });
+      setSliderIdx(idx);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSliderIdx((prev) => {
+        const next = (prev + 1) % transferGallery.length;
+        scrollTo(next);
+        return next;
+      });
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [scrollTo]);
+
+  const slidePrev = () => {
+    const prev = sliderIdx <= 0 ? transferGallery.length - 1 : sliderIdx - 1;
+    scrollTo(prev);
+  };
+  const slideNext = () => {
+    const next = (sliderIdx + 1) % transferGallery.length;
+    scrollTo(next);
+  };
 
   return (
     <>
@@ -65,7 +83,7 @@ export default function Home() {
           <div className="absolute -bottom-32 -left-32 h-[500px] w-[500px] rounded-full bg-white" />
         </div>
 
-        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-24">
+        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 pt-28 pb-16 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:pt-32 lg:pb-24">
           <div className="text-white">
             <p className="mb-3 inline-block rounded-full bg-white/15 px-4 py-1.5 text-xs font-medium tracking-wide uppercase backdrop-blur">
               Thailand's Trusted Transfer Service
@@ -103,53 +121,68 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services */}
-      <section className="bg-white py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="mb-12 text-center">
-            <h2 className="mb-3 text-3xl font-bold text-gray-900">Our Services</h2>
-            <p className="mx-auto max-w-2xl text-gray-500">
-              From airport pick-ups to island adventures, we offer a complete range of transportation and tour services.
+      {/* Happy Travelers Slider */}
+      <section className="bg-gray-50 py-10 lg:py-16">
+        <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="mb-8 text-center">
+            <h2 className="mb-2 text-2xl font-bold text-gray-900 lg:text-3xl">
+              Our Happy Travelers
+            </h2>
+            <p className="text-sm text-gray-500">
+              Real customers, real journeys across Thailand.
             </p>
           </div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((s) => (
-              <div key={s.title} className="group rounded-2xl border border-gray-100 p-8 transition hover:border-primary-100 hover:shadow-lg">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary-600 transition group-hover:bg-primary-600 group-hover:text-white">
-                  <s.icon size={24} />
-                </div>
-                <h3 className="mb-2 text-lg font-semibold text-gray-900">{s.title}</h3>
-                <p className="text-sm leading-relaxed text-gray-500">{s.desc}</p>
+
+          {/* Prev / Next buttons */}
+          <button
+            onClick={slidePrev}
+            className="absolute -left-3 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-white p-2.5 shadow-lg transition hover:bg-primary-50 lg:flex"
+          >
+            <ChevronLeft size={20} className="text-primary-700" />
+          </button>
+          <button
+            onClick={slideNext}
+            className="absolute -right-3 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-white p-2.5 shadow-lg transition hover:bg-primary-50 lg:flex"
+          >
+            <ChevronRight size={20} className="text-primary-700" />
+          </button>
+
+          {/* Scrollable track */}
+          <div
+            ref={sliderRef}
+            className="scrollbar-hide flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth"
+          >
+            {transferGallery.map((item, i) => (
+              <div
+                key={i}
+                className="w-72 flex-shrink-0 snap-start overflow-hidden rounded-2xl bg-white shadow-md transition hover:shadow-xl sm:w-80"
+              >
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  loading="lazy"
+                  className="aspect-square h-full w-full object-cover"
+                />
               </div>
+            ))}
+          </div>
+
+          {/* Dots */}
+          <div className="mt-6 flex justify-center gap-2">
+            {transferGallery.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => scrollTo(i)}
+                className={`h-2 rounded-full transition-all ${
+                  i === sliderIdx ? "w-6 bg-primary-600" : "w-2 bg-gray-300 hover:bg-gray-400"
+                }`}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <section className="bg-primary-50/50 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="mb-12 text-center">
-            <h2 className="mb-3 text-3xl font-bold text-gray-900">Why Choose SayHi Transfer?</h2>
-            <p className="mx-auto max-w-2xl text-gray-500">
-              We're dedicated to making your travel experience seamless and enjoyable.
-            </p>
-          </div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => (
-              <div key={f.title} className="rounded-2xl bg-white p-8 shadow-sm">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-100 text-primary-600">
-                  <f.icon size={24} />
-                </div>
-                <h3 className="mb-2 text-lg font-semibold text-gray-900">{f.title}</h3>
-                <p className="text-sm leading-relaxed text-gray-500">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Tours */}
+      {/* Popular Day Trips */}
       {tours.length > 0 && (
         <section className="bg-white py-16 lg:py-24">
           <div className="mx-auto max-w-7xl px-4 lg:px-8">
@@ -196,20 +229,25 @@ export default function Home() {
         </section>
       )}
 
-      {/* CTA */}
-      <section className="bg-gradient-to-r from-primary-700 to-primary-900 py-16">
-        <div className="mx-auto max-w-7xl px-4 text-center lg:px-8">
-          <h2 className="mb-4 text-3xl font-bold text-white">Ready to Start Your Journey?</h2>
-          <p className="mx-auto mb-8 max-w-xl text-blue-200">
-            Book your transfer now and enjoy a hassle-free travel experience. We'll confirm your booking within 3 hours.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/transfer" className="rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-primary-700 shadow-lg transition hover:bg-gray-50">
-              Book Transfer
-            </Link>
-            <Link to="/tour" className="rounded-lg border border-white/30 px-8 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10">
-              Explore Tours
-            </Link>
+      {/* Our Services */}
+      <section className="bg-gray-50 py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="mb-3 text-3xl font-bold text-gray-900">Our Services</h2>
+            <p className="mx-auto max-w-2xl text-gray-500">
+              From airport pick-ups to island adventures, we offer a complete range of transportation and tour services.
+            </p>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((s) => (
+              <div key={s.title} className="group rounded-2xl border border-gray-100 bg-white p-8 transition hover:border-primary-100 hover:shadow-lg">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary-600 transition group-hover:bg-primary-600 group-hover:text-white">
+                  <s.icon size={24} />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold text-gray-900">{s.title}</h3>
+                <p className="text-sm leading-relaxed text-gray-500">{s.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

@@ -27,6 +27,7 @@ if (isset($_GET['id'])) {
     $tour['schedule']     = json_decode($tour['schedule'], true);
     $tour['included']     = json_decode($tour['included'], true);
     $tour['not_included'] = json_decode($tour['not_included'], true);
+    $tour['gallery']      = json_decode($tour['gallery'] ?? '[]', true) ?: [];
 
     jsonResponse($tour);
 }

@@ -1,12 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Clock, Check, X, MapPin, Calendar, Users, Loader2 } from "lucide-react";
+import { ArrowLeft, Clock, Check, X, MapPin, Calendar, Users, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { fetchTour } from "../api";
 
 export default function TourDetail() {
   const { id } = useParams();
   const [tour, setTour] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImg, setCurrentImg] = useState(0);
+
+  const gallery = tour?.gallery || [];
+
+  const openLightbox = (index) => { setCurrentImg(index); setLightboxOpen(true); };
+  const closeLightbox = () => setLightboxOpen(false);
+  const prevImg = useCallback(() => setCurrentImg((p) => (p - 1 + gallery.length) % gallery.length), [gallery.length]);
+  const nextImg = useCallback(() => setCurrentImg((p) => (p + 1) % gallery.length), [gallery.length]);
 
   useEffect(() => {
     setLoading(true);
@@ -15,6 +25,17 @@ export default function TourDetail() {
       .catch(() => setTour(null))
       .finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const handleKey = (e) => {
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") prevImg();
+      if (e.key === "ArrowRight") nextImg();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [lightboxOpen, prevImg, nextImg]);
 
   if (loading) {
     return (
@@ -42,7 +63,7 @@ export default function TourDetail() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="relative bg-gradient-to-br from-primary-700 to-primary-900 py-16">
+      <div className="relative bg-gradient-to-br from-primary-700 to-primary-900 pt-28 pb-16">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute -top-20 -right-20 h-80 w-80 rounded-full bg-white" />
         </div>
@@ -56,6 +77,42 @@ export default function TourDetail() {
           <h1 className="text-3xl font-bold text-white lg:text-4xl">{tour.name}</h1>
         </div>
       </div>
+
+      {/* Gallery */}
+      {gallery.length > 0 && (
+        <div className="mx-auto max-w-7xl px-4 pt-10 lg:px-8">
+          <div className={`grid gap-3 ${gallery.length === 1 ? "grid-cols-1" : gallery.length === 2 ? "grid-cols-2" : "grid-cols-2 md:grid-cols-4"}`}>
+            {gallery.slice(0, 5).map((img, i) => (
+              <button
+                key={i}
+                onClick={() => openLightbox(i)}
+                className={`group relative overflow-hidden rounded-xl ${
+                  gallery.length >= 3 && i === 0 ? "col-span-2 row-span-2" : ""
+                }`}
+              >
+                <img src={img} alt={`${tour.name} ${i + 1}`} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" style={{ minHeight: gallery.length >= 3 && i === 0 ? "320px" : "154px" }} />
+                <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/10" />
+                {i === 4 && gallery.length > 5 && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                    <span className="text-lg font-semibold text-white">+{gallery.length - 5} more</span>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox */}
+      {lightboxOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90" onClick={closeLightbox}>
+          <button onClick={(e) => { e.stopPropagation(); closeLightbox(); }} className="absolute top-4 right-4 text-3xl text-white/80 hover:text-white">&times;</button>
+          <button onClick={(e) => { e.stopPropagation(); prevImg(); }} className="absolute left-4 rounded-full bg-white/10 p-2 text-white backdrop-blur hover:bg-white/20"><ChevronLeft size={28} /></button>
+          <img src={gallery[currentImg]} alt="" className="max-h-[85vh] max-w-[90vw] rounded-lg object-contain" onClick={(e) => e.stopPropagation()} />
+          <button onClick={(e) => { e.stopPropagation(); nextImg(); }} className="absolute right-4 rounded-full bg-white/10 p-2 text-white backdrop-blur hover:bg-white/20"><ChevronRight size={28} /></button>
+          <div className="absolute bottom-4 text-sm text-white/70">{currentImg + 1} / {gallery.length}</div>
+        </div>
+      )}
 
       <div className="mx-auto max-w-7xl px-4 py-10 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-3">

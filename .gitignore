@@ -25,3 +25,8 @@ dist-ssr
 
 # API config (contains DB credentials)
 api/config.php
+
+# Environment variables (contains API keys)
+.env
+.env.local
+.env.*.local

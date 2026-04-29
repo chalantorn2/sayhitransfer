@@ -37,7 +37,7 @@ export default function AboutUs() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary-800 to-primary-900 py-16">
+      <div className="bg-gradient-to-r from-primary-800 to-primary-900 pt-28 pb-16">
         <div className="mx-auto max-w-7xl px-4 text-center lg:px-8">
           <h1 className="mb-3 text-3xl font-bold text-white lg:text-4xl">
             About SayHi Transfer
@@ -50,51 +50,51 @@ export default function AboutUs() {
         </div>
       </div>
 
-      {/* Story */}
+      {/* Certifications */}
       <section className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-6 text-2xl font-bold text-gray-900">
-              Our Story
+          <div className="mx-auto mb-10 max-w-3xl text-center">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Certified & Licensed
             </h2>
-            <p className="mb-4 leading-relaxed text-gray-600">
-              SayHi Transfer was founded with a simple mission: to make travel
-              in Thailand stress-free and enjoyable. We noticed that many
-              travelers struggled with finding safe, reliable transportation
-              — especially between airports, hotels, and popular attractions.
-            </p>
-            <p className="leading-relaxed text-gray-600">
-              Today, we serve thousands of happy travelers every year, offering
-              airport transfers, hotel shuttles, and curated day trips across
-              Thailand's most beautiful destinations. Our fleet of modern
-              vehicles and team of professional drivers ensure every journey is
-              comfortable and memorable.
-            </p>
+          </div>
+
+          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2">
+            {[
+              {
+                src: "/documents/tat.png",
+                title: "TAT License",
+              },
+              {
+                src: "/documents/dbd.png",
+                title: "DBD Registration",
+              },
+            ].map((doc) => (
+              <div key={doc.title} className="flex flex-col items-center">
+                <a
+                  href={doc.src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block w-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
+                >
+                  <img
+                    src={doc.src}
+                    alt={doc.title}
+                    className="h-[500px] w-full object-contain bg-gray-50 p-4 transition group-hover:scale-[1.02]"
+                    loading="lazy"
+                  />
+                </a>
+                <h3 className="mt-5 text-lg font-semibold text-gray-900">
+                  {doc.title}
+                </h3>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="bg-primary-50/50 py-12">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 lg:grid-cols-4 lg:px-8">
-          {[
-            { number: "5,000+", label: "Happy Travelers" },
-            { number: "50+", label: "Routes Available" },
-            { number: "24/7", label: "Customer Support" },
-            { number: "4.9/5", label: "Average Rating" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <p className="text-3xl font-bold text-primary-700">
-                {stat.number}
-              </p>
-              <p className="mt-1 text-sm text-gray-500">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Values */}
-      <section className="bg-white py-16">
+      <section className="bg-primary-50/50 py-16">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <h2 className="mb-10 text-center text-2xl font-bold text-gray-900">
             Why Travelers Choose Us
@@ -128,36 +128,54 @@ export default function AboutUs() {
                 Reach out through any of these channels.
               </p>
               <div className="space-y-4">
-                <div className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm">
+                <a
+                  href="https://wa.me/66803895519"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm transition hover:shadow-md"
+                >
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
                     <Phone size={20} />
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Phone</p>
-                    <p className="font-medium text-gray-900">+66 76 123 456</p>
+                    <p className="font-medium text-gray-900">+66 80 389 5519</p>
                   </div>
-                </div>
-                <div className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm">
+                </a>
+                <a
+                  href="mailto:tptravelandtour@gmail.com"
+                  className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm transition hover:shadow-md"
+                >
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
                     <Mail size={20} />
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Email</p>
                     <p className="font-medium text-gray-900">
-                      info@sayhitransfer.com
+                      tptravelandtour@gmail.com
                     </p>
                   </div>
-                </div>
-                <div className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm">
+                </a>
+                <a
+                  href="https://wa.me/66803895519"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm transition hover:shadow-md"
+                >
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
                     <MessageCircle size={20} />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400">LINE</p>
-                    <p className="font-medium text-gray-900">@sayhitransfer</p>
+                    <p className="text-sm text-gray-400">WhatsApp</p>
+                    <p className="font-medium text-gray-900">+66 80 389 5519</p>
                   </div>
-                </div>
-                <div className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm">
+                </a>
+                <a
+                  href="https://www.facebook.com/share/1EVsQwfz9c/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm transition hover:shadow-md"
+                >
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
                     <Globe size={20} />
                   </div>
@@ -165,16 +183,14 @@ export default function AboutUs() {
                     <p className="text-sm text-gray-400">Facebook</p>
                     <p className="font-medium text-gray-900">SayHi Transfer</p>
                   </div>
-                </div>
+                </a>
                 <div className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
                     <MapPin size={20} />
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Office</p>
-                    <p className="font-medium text-gray-900">
-                      Phuket, Thailand
-                    </p>
+                    <p className="font-medium text-gray-900">Krabi, Thailand</p>
                   </div>
                 </div>
               </div>

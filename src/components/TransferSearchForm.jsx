@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { fetchLocations } from "../api";
-import LocationAutocomplete from "./LocationAutocomplete";
+import HotelSearchInput from "./HotelSearchInput";
 import DatePickerCustom from "./DatePickerCustom";
 import TimePickerCustom from "./TimePickerCustom";
 
@@ -33,9 +33,35 @@ export default function TransferSearchForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    Object.entries(form).forEach(([k, v]) => {
-      if (v !== "" && v !== 0) params.set(k, v);
-    });
+    params.set("type", form.type);
+
+    if (form.pickup && typeof form.pickup === "object") {
+      params.set("pickup", form.pickup.location_id);
+      if (form.pickup.hotel_name)
+        params.set("pickup_hotel", form.pickup.hotel_name);
+      if (form.pickup.hotel_address)
+        params.set("pickup_addr", form.pickup.hotel_address);
+      if (form.pickup.lat != null) params.set("pickup_lat", form.pickup.lat);
+      if (form.pickup.lng != null) params.set("pickup_lng", form.pickup.lng);
+    }
+    if (form.dropoff && typeof form.dropoff === "object") {
+      params.set("dropoff", form.dropoff.location_id);
+      if (form.dropoff.hotel_name)
+        params.set("dropoff_hotel", form.dropoff.hotel_name);
+      if (form.dropoff.hotel_address)
+        params.set("dropoff_addr", form.dropoff.hotel_address);
+      if (form.dropoff.lat != null) params.set("dropoff_lat", form.dropoff.lat);
+      if (form.dropoff.lng != null) params.set("dropoff_lng", form.dropoff.lng);
+    }
+
+    if (form.date) params.set("date", form.date);
+    if (form.time) params.set("time", form.time);
+    if (form.returnDate) params.set("returnDate", form.returnDate);
+    if (form.returnTime) params.set("returnTime", form.returnTime);
+    if (form.adt) params.set("adt", form.adt);
+    if (form.chd) params.set("chd", form.chd);
+    if (form.inf) params.set("inf", form.inf);
+
     navigate(`/transfer?${params.toString()}`);
   };
 
@@ -47,7 +73,7 @@ export default function TransferSearchForm() {
       onSubmit={handleSubmit}
       className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl lg:p-8"
     >
-      <h3 className="mb-5 text-lg font-semibold text-primary-900">
+      <h3 className="mb-5 text-lg font-semibold text-center text-primary-900">
         Book Your Transfer
       </h3>
 
@@ -64,26 +90,26 @@ export default function TransferSearchForm() {
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            {t === "oneway" ? "One Way" : "Return"}
+            {t === "oneway" ? "One Way" : "Round Trip"}
           </button>
         ))}
       </div>
 
       {/* Locations */}
-      <div className="mb-4 space-y-3">
-        <LocationAutocomplete
+      <div className="mb-4 space-y-2">
+        <HotelSearchInput
           locations={locations}
           value={form.pickup}
           onChange={(v) => set("pickup", v)}
-          placeholder="Pick-up Location"
+          placeholder="Pick-up — hotel or place"
           iconColor="text-primary-500"
           required
         />
-        <LocationAutocomplete
+        <HotelSearchInput
           locations={locations}
           value={form.dropoff}
           onChange={(v) => set("dropoff", v)}
-          placeholder="Drop-off Location"
+          placeholder="Drop-off — hotel or place"
           iconColor="text-red-400"
           required
         />
